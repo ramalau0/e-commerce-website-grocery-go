@@ -1,0 +1,35 @@
+.topproduct {
+
+
+  .heading {
+    text-align: left;
+  
+
+  }
+  .head {
+    @include flex(center, space-between, center);
+   // @include positions(sticky, 71px, none, 0, none, none, 100%);
+    //box-shadow: 0 0 4px 0 rgb(115 115 115 / 20%);
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.8);
+    width: 100%;
+  
+  }
+  .category {
+    @extend .head;
+    width: 50%;
+    
+    display: flex;
+    flex-wrap: wrap;
+    button {
+      margin-left: 20px;
+      margin-bottom: 10px;
+    }
+  }
+ 
+ 
+
+  
+
+}
+
