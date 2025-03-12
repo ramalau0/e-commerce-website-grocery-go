@@ -6,12 +6,13 @@ const mysql = require( 'mysql')
 //const yoco = require('yoco-node');
 const twilio = require('twilio');
 require('dotenv').config();
-const mysql = require('mysql');
+// const mysql = require('mysql');
 
 const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
-  database: process.env.DB_NAME
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
 });
 
 app.use(cors());

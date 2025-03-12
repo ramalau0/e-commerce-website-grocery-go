@@ -35,7 +35,7 @@ const Register = (props) => {
     const handleSubmit = async (e) => {
     e.preventDefault();
     if (email.length !==0 && password.length > 8 && phoneNumber.length >= 10){
-    const data = await axios.post('http://localhost:3002/api/insert', {
+    const data = await axios.post('https://grocerygo.co.za/api/insert', {
       email: email,
       password: password,
       phone: phoneNumber
@@ -100,7 +100,7 @@ const Login = () => {
  
     const handleSubmits = async(e) => {
       e.preventDefault();
-      const datas = await axios.post('http://localhost:3002/api/get', {
+      const datas = await axios.post('https://grocerygo.co.za/api/get', {
         emailLog: email.toLocaleLowerCase(),
         password: password.toString()
       })

@@ -149,8 +149,9 @@ export let topProduct = []
 
 const fetchGrocery = async () => {
   try {
-    const response = await axios.post("http://localhost:3002/api/gro");
+    const response = await axios.post("https://grocerygo.co.za/api/gro");
     console.log("this is the new staff", response.data);
+   
     return response.data;
   } catch (error) {
     console.error("Error fetching grocery data", error);

@@ -9,7 +9,7 @@ export let topShops = []
 
 const fetchShops = async () => {
     try {
-      const response = await axios.post("http://localhost:3002/api/shops");
+      const response = await axios.post("https://grocerygo.co.za/api/shops");
       console.log("this is the new staff2", response.data);
       return response.data;
     } catch (error) {

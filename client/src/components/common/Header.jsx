@@ -148,14 +148,14 @@ const handleCheckout = async (e) => {
   try {
 
 
-   const data = await axios.post('http://localhost:3002/api/ph', {
+   const data = await axios.post('https://grocerygo.co.za/api/ph', {
     email: myEmail
    }) 
  
 
    const phone = data.data.map(Element => Element.Phone)
    console.log("prices", phone)
-   const sms = await axios.post('http://localhost:3002/api/sms',{
+   const sms = await axios.post('https://grocerygo.co.za/api/sms',{
     to: "+27656340510",
     body: `Order items: ${items},  Total price: ${price}, phone: ${phone}, locataion: ${location}`
    })
@@ -175,7 +175,7 @@ alert("Order Created Succefully")
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-  const data = await axios.post('http://localhost:3002/api/yoco',{
+  const data = await axios.post('https://grocerygo.co.za/api/yoco',{
   });
 
 
