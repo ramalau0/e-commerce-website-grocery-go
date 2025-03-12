@@ -128,12 +128,12 @@ const handleCheckout = async (e) => {
 
   if (!myEmail) {
     window.location.href = "/User";
-    alert('Error','Please login before you purchase')
+    alert('Please login before you purchase')
   
 
-  } else { 
+  } else if (location) { 
 
-  // save items orded to db and wait for payment                                  
+                                  
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -168,87 +168,34 @@ const handleCheckout = async (e) => {
     });
 */
 setCartList(null)
-alert("Order Created Succefully")
+alert("Order has been send please enter card details to finish order")
 
   
     
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-  const data = await axios.post('https://grocerygo.co.za/api/yoco',{
-  });
+
 
 
 
   /////////////////////////////////////////////////////////
  // alert("results",data.data)
-  console.log("this data",data.data)
-  const secretKey = data.data
+
 
 
   // process payment 
   setCartList(null)
-  
-  const yoco = new window.YocoSDK({
-    publicKey: process.env.REACT_APP_PUBLIC_KEY,
-    secretKey: secretKey
-    
+  const redirectUrl = await axios.post('https://grocerygo.co.za/api/yoco',{ price
   });
-  try {
-    const result = await yoco.showPopup({
-      amountInCents: 500,
-      currency: 'ZAR',
-      name: 'Grocery Go',
-      description: '',
-      style: {
-        zIndex:  1,
-      },
-    });
-    console.log("token?",result)
-   
-      const response = await fetch('https://payments.yoco.com/api/checkouts', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${secretKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      amount: 900,
-      currency: 'ZAR'
-    }),
-    })
-  
-  const data = await response.json();
-  console.log(data)
-
-
-  .then(response => response.json())
-  .then(data => {
-    // Handle the response from Yoco, which may include sale details
-    console.log('Sale created:', data);
-    // Perform any additional actions you need
-  })
-  .catch(error => {
-    console.error('Error creating sale:', error);
-  });
-
-      // Assuming the YocoSDK generates a DOM element for the popup
-    const yocoPopupElement = document.querySelector('.yoco-popup'); // Adjust the selector as needed
-
-    if (yocoPopupElement) {
-      yocoPopupElement.style.zIndex = '1000'; // Change the z-index value as needed
-    }
-
-    console.log(result)
-    localStorage.setItem("setSectionNone",true)
-     
-  } catch (error) {
-    //setError(error.message);
+  console.log(redirectUrl, "nnj")
+  if (redirectUrl) {
+    window.location.href = redirectUrl.data.redirectUrl; 
   }
-   /////////////////////////////////////////
+   
 
-  
-  // 
+  } else {
+    alert("Please enter location to finish order")
   }
   
 };
@@ -332,8 +279,13 @@ alert("Order Created Succefully")
        
                      />
                      </div>
-                    <button  type='button' className='logout-button' onClick={handleCheckout} >
+                    <button sx={{ mr: 2 }} type='button' className='logout-button' onClick={handleCheckout} >
                      Purchase 
+                    
+                    </button>
+                  
+                    <button  type='button' className='logout-button' onClick={handleClose} >
+                     Close tab 
                     
                     </button>
                   </section>

@@ -53,9 +53,10 @@ header {
     }
     .showCart {
       background: $white;
-      @include positions(absolute, 10%, none, none, 20px, 450px, auto);
+      @include positions(absolute, 7%, none, none, 20px, 450px, auto);
       @include shadow(rgba(0, 0, 0, 0.15) 0px 2px 8px);
       @include pa_ma(20px 0, 0);
+      max-width: 90%;
       border-radius: 5px;
       z-index: 9999;
 
@@ -108,7 +109,7 @@ Header.active {
   background: rgba(255, 255, 255, 0.8);
 
   .showCart {
-    @include positions(absolute, 110%, none, none, 20px, 300, auto);
+    @include positions(absolute, 100%, none, none, 20px, 300, auto);
     overflow: auto; /* or scroll */
     max-height: 400px; /* or specify a fixed height */
   

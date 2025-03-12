@@ -68,18 +68,37 @@ app.post("/api/insertOrd", (req, res) => {
 
 
 // Handle Yoco webhook callback
-app.post('/api/yoco', (req, res) => {
-    //const payload = req.body.result;
-    const secretKey = process.env.SECRET_KEY;; // Replace with your actual private key
+app.post('/api/yoco', async (req, res) => {  
+  const secretKey = process.env.SECRET_KEY; 
+  const price = req.body.price
+  try {
+      const response = await fetch("https://payments.yoco.com/api/checkouts", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${secretKey}`,
+          },
+          body: JSON.stringify({
+              amount: price * 100,
+              currency: "ZAR",
+          }),
+      });
+
+      if (!response.ok) {
+          throw new Error("Failed to create checkout");
+      }
+
+      const data = await response.json();
   
-    //const yocoClient = new yoco.Client(secretKey);
-   // console.log("pau",payload)
-    // Verify the webhook signature
-  
-      res.send(secretKey);
-      //console.log()
- 
-  });
+      // Send the redirect URL back to the frontend
+      res.json({ redirectUrl: data.redirectUrl });
+
+  } catch (error) {
+      console.error("Error creating checkout:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 
 app.post('/api/ph',(req, res) => {
@@ -111,7 +130,7 @@ app.post('/api/sms', (req, res) => {
   client.messages
     .create({
       to,
-      from: '+13252195736',
+      from: '+15162027291',
       body,
     })
     .then((message) => {

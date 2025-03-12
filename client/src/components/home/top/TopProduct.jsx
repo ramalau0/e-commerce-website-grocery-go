@@ -27,7 +27,7 @@ export const TopProduct = () => {
   
   const fetchGrocery = async () => {
     try {
-      const response = await axios.post("http://34.70.10.82:3002/api/gro");
+      const response = await axios.post("https://grocerygo.co.za/api/gro");
       console.log("this is the new staff", response.data);
       
       setTopProducts(response.data)
@@ -39,7 +39,7 @@ export const TopProduct = () => {
   }
   const fetchShops = async () => {
     try {
-      const response = await axios.post("http://localhost:3002/api/shops");
+      const response = await axios.post("https://grocerygo.co.za/api/shops");
       console.log("this is the new staff2", response.data);
       setTopShop(response.data)
       handleFilterShops("all", response.data)

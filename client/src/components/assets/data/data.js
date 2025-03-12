@@ -147,30 +147,30 @@ export const banner = [
 
 export let topProduct = []
 
-const fetchGrocery = async () => {
-  try {
-    const response = await axios.post("https://grocerygo.co.za/api/gro");
-    console.log("this is the new staff", response.data);
+// const fetchGrocery = async () => {
+//   try {
+//     const response = await axios.post("https://grocerygo.co.za/api/gro");
+//     console.log("this is the new staff", response.data);
    
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching grocery data", error);
-    throw error; // Propagate the error so that it can be handled elsewhere
-  }
-};
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error fetching grocery data", error);
+//     throw error; // Propagate the error so that it can be handled elsewhere
+//   }
+// };
 
 
 
-  fetchGrocery()
-  .then((data) => {
-    topProduct = data
-    console.log("this",topProduct)
-     // Assign topProducts when the data is fetched
-  })
-  .catch((error) => {
-    // Handle errors if necessary
-    console.error("Error fetching grocery data", error);
-  });
+  // fetchGrocery()
+  // .then((data) => {
+  //   topProduct = data
+  //   console.log("this",topProduct)
+  //    // Assign topProducts when the data is fetched
+  // })
+  // .catch((error) => {
+  //   // Handle errors if necessary
+  //   console.error("Error fetching grocery data", error);
+  // });
 
 
 
