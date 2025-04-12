@@ -178,7 +178,7 @@ export const TopProduct = () => {
                 onClick={() => handleFilter(category, topProducts)}
                 variant="outlined" // You can change this to "contained" for a filled button look
                 sx={{
-                  padding: '8px 16px', // Adds padding to make the button more clickable
+                  minWidth: 'auto',  // Adds padding to make the button more clickable
                   fontWeight: 'bold', // Bold text for better readability
                   borderRadius: '20px', // Round the corners for a softer look
                   textTransform: 'none', // Prevents uppercasing text by default
@@ -222,7 +222,7 @@ export const TopProduct = () => {
                     onClick={() => handleFilterShops(shop, topShop)}
                     variant="outlined"
                     sx={{
-                      padding: '8px 16px',
+                      minWidth: 'auto',
                       fontWeight: 'bold', 
                       borderRadius: '20px', 
                       textTransform: 'none', 

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react"
 import logo from "../assets/images/logo.svg"
 import cartimg from "../assets/images/cart.png"
@@ -22,6 +23,7 @@ import { getAuth , createUserWithEmailAndPassword, signInWithEmailAndPassword} f
 import { getFirestore } from "firebase/firestore";
 import { collection, addDoc, getDocs ,query, where,} from "firebase/firestore";
 import axios from "axios";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 
 
 
@@ -54,6 +56,10 @@ export const Header = () => {
   const [location, setLocation ] = useState('');
   const [dateTime, setDateTime] = useState(new Date());
   const [status, setStatus] = useState('On the way');
+
+  const [open, setOpen] = useState(false);
+  const [phone, setPhone] = useState('')
+  const [items, setItems] = useState('')
   //const [sectionNone, setSectionNone] = useState(false)
   //const [addressLine1, setAddressLine1] = useState('');
 
@@ -139,7 +145,7 @@ const handleCheckout = async (e) => {
 
 
   const pic = getdata.map(Element => Element.cover);
-  const items = getdata.map(Element => Element.title);
+  setItems(getdata.map(Element => Element.title));
   const priceItem = getdata.map(Element => Element.price);
   
   const phoneNumbers = ['0685885609']; // Replace with the recipient's phone numbers
@@ -153,12 +159,10 @@ const handleCheckout = async (e) => {
    }) 
  
 
-   const phone = data.data.map(Element => Element.Phone)
-   console.log("prices", phone)
-   const sms = await axios.post('https://grocerygo.co.za/api/sms',{
-    to: "+27656340510",
-    body: `Order items: ${items},  Total price: ${price}, phone: ${phone}, locataion: ${location}`
-   })
+   setPhone(data.data.map(Element => Element.Phone))
+ 
+  //  const status = "Prepering order(not paid)"
+
 
    /*
     // Loop through the phoneNumbers and open a WhatsApp link for each one
@@ -166,11 +170,11 @@ const handleCheckout = async (e) => {
       const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
       window.open(whatsappURL, '_blank');
     });
-*/
-setCartList(null)
-alert("Order has been send please enter card details to finish order")
+    */
+    setOpen(true);
+    setCartList(null);
+    
 
-  
     
   } catch (e) {
     console.error("Error adding document: ", e);
@@ -185,13 +189,7 @@ alert("Order has been send please enter card details to finish order")
 
 
   // process payment 
-  setCartList(null)
-  const redirectUrl = await axios.post('https://grocerygo.co.za/api/yoco',{ price
-  });
-  console.log(redirectUrl, "nnj")
-  if (redirectUrl) {
-    window.location.href = redirectUrl.data.redirectUrl; 
-  }
+ 
    
 
   } else {
@@ -199,6 +197,60 @@ alert("Order has been send please enter card details to finish order")
   }
   
 };
+
+const handlePurchae = async(method) => {
+
+  if (method === "card") {
+    try {
+      const redirectUrl = await axios.post("https://grocerygo.co.za/api/yoco", { price });
+      if (redirectUrl.data.redirectUrl) {
+        const savedata = await axios.post('https://grocerygo.co.za/api/insertOrd', {
+          email: myEmail, 
+          getData: items,
+          cost: price,
+          status: status,
+          phone: phone,
+          location: location,
+          checkoutId: redirectUrl.data.redirectUrl,
+          paymentType:  "card" 
+         })
+         const sms = await axios.post('https://grocerygo.co.za/api/sms',{
+          to: "+27656340510",
+          body: `Order items: ${items},  Total price: ${price}, phone: ${phone}, locataion: ${location}, Payment method: card`
+         })
+      
+        window.location.href = redirectUrl.data.redirectUrl;
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+    }
+  } else if (method == "cash") {
+   
+    const savedata = await axios.post('https://grocerygo.co.za/api/insertOrd', {
+      email: myEmail, 
+      getData: items,
+      cost: price,
+      status: status,
+      phone: phone,
+      location: location,
+      checkoutId: "none",
+      paymentType: "cash"
+     })
+     const sms = await axios.post('https://grocerygo.co.za/api/sms',{
+      to: "+27656340510",
+      body: `Order items: ${items},  Total price: ${price}, phone: ${phone}, locataion: ${location}, Payment method: cash`
+     })
+     if(savedata){
+      alert("Your order was placed. You will be contacted.");
+     } else (
+      alert("Order was not successful please contact us.")
+     )
+    window.location.href = "https://grocerygo.co.za/user"
+
+    setCartList(null);
+  }
+  setOpen(false)
+}
 
   return (
     <>
@@ -267,14 +319,14 @@ alert("Order has been send please enter card details to finish order")
                       </div>
                     ))}
                     <div className='details_total'>
-                      <h4>Total : R{price}</h4>
+                      <h4>Total : R{price.toFixed(2)}</h4>
                     </div>
                     <div>
                     <input
                       type="Location"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      placeholder="Gate no, street, res name"
+                      placeholder="Street name, & suburb"
                       className="btn-container loginput"
        
                      />
@@ -293,9 +345,31 @@ alert("Order has been send please enter card details to finish order")
                   <div className='empty'>
                     <p>Your cart is empty</p>
                     <img src={cartimg} alt='' />
+                    <button  type='button' className='logout-button' onClick={handleClose} >
+                     Close tab 
+                    
+                    </button>
                   </div>
+                  
                 )}
               </div>
+              <Dialog open={open} onClose={() => setOpen(false)}>
+      <DialogTitle>Select Payment Method</DialogTitle>
+      <DialogContent>
+        <p>Would you like to pay with Card or Cash?</p>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => handlePurchae('cash')} color="primary">
+          Cash
+        </Button>
+        <Button onClick={() => handlePurchae('card')} color="secondary">
+          Card
+        </Button>
+        <Button onClick={() => setOpen(false)} color="primary">
+          Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>
             </div>
           </div>
         </div>

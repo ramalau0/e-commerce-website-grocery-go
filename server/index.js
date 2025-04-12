@@ -53,14 +53,19 @@ app.post("/api/insertOrd", (req, res) => {
 
     const email = req.body.email;
     const items = req.body.getData;
+    const itemsString = items.join(', ')
   //const date = req.body.date;
     const totalCost= req.body.cost;
     const status = req.body.status;
+    const phone =  req.body.phone;
     const location = req.body.location;
+    const checkoutId = req.body.checkoutId;
+    const paymentType = req.body.paymentType;
     
-    const sqlInsert = "INSERT INTO Orders (items, TotalCost, Email, Location, Status) VALUES (?,?,?,?,?)";
-    db.query (sqlInsert,[items, totalCost, email, location, status], (err, result)=>{
+    const sqlInsert = "INSERT INTO Orders (items, TotalCost, Email, Location, Phone,Status, CheckoutId, PaymentType) VALUES (?,?,?,?,?,?,?,?)";
+    db.query (sqlInsert,[itemsString, totalCost, email, location, phone ,status,checkoutId, paymentType ], (err, result)=>{
     console.log(err);
+    console.log(result);
     result.length !== 0? (res.send(validated = true)) : (res.send(validated = false));
     });
      
@@ -197,6 +202,17 @@ app.post("/my/webhook/url", function(req, res) {
 app.post('/api/gro', (req, res) => {
 
   const sqlSelect = "SELECT * FROM grocery_prices";
+  db.query(sqlSelect,(err, result)=>{
+  console.log(result)
+  res.send(result)
+  //result.length !== 0? (res.send(validated = true)) : (res.send(validated = false));
+//  console.log(validated)
+  });
+})
+
+app.post('/api/orders', (req, res) => {
+
+  const sqlSelect = "SELECT * FROM Orders";
   db.query(sqlSelect,(err, result)=>{
   console.log(result)
   res.send(result)
