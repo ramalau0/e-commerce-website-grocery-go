@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-//import bcrypt from "bcryptjs";
-//import jwt from "jsonwebtoken";
-//import { getAuth , createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
+import { Card, CardContent } from "@mui/material";
+import { Typography, Button, Collapse, Divider, Box } from "@mui/material";
 import { collection, addDoc, getDocs ,query, where,} from "firebase/firestore";
 import { useEffect } from 'react';
 import "./user.css";
@@ -30,7 +29,6 @@ const Register = (props) => {
  // const [addressLine1, setAddressLine1] = useState('');
  // const [addressLine2, setAddressLine2] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
 
   /*
   const handleSubmit = async (e) => {
@@ -107,6 +105,7 @@ const Login = () => {
 
  
  
+
  
     const handleSubmits = async(e) => {
       e.preventDefault();
@@ -223,7 +222,11 @@ const User = (props) => {
   
   //const email = "gacadap370@otanhome.com";
   const [user, setUser] = useState(null);
-  
+  const [expandedOrder, setExpandedOrder] = useState(null);
+
+  const handleToggle = (orderId) => {
+    setExpandedOrder(expandedOrder === orderId ? null : orderId);
+  };
 
   useEffect(() => {
     if (email) {
@@ -296,49 +299,81 @@ const User = (props) => {
     
       <div>
       {isAuthenticated ? (
-        <div className='user-details-container'>
-          <h1  className="userhd" >Welcome!</h1>
-          <p>Email: {email} </p>
+  <div className="user-details-container">
+  <Typography variant="h4" gutterBottom>Welcome!</Typography>
+  <Typography>Email: {email}</Typography>
 
-          <h2>Order History:</h2>
-          <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-          <TableCell sx={{ minWidth: 100, maxWidth: 200 }}>Order ID</TableCell>
-<TableCell sx={{ minWidth: 150, maxWidth: 250 }}>Date</TableCell>
-<TableCell sx={{ minWidth: 200, maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Items</TableCell>
-<TableCell sx={{ minWidth: 100, maxWidth: 200 }}>Status</TableCell>
+  <Typography variant="h5" sx={{ mt: 3 }}>Order History:</Typography>
 
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order) => (
-            <TableRow key={order.OrderId}>
-              <TableCell>{order.OrderId}</TableCell>
-              <TableCell>{format(new Date(order.Date), "dd MMM yyyy HH:mm:ss")}</TableCell>
-              <TableCell sx={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {order.Items}
-              </TableCell>
-              <TableCell>{order.Status}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={orders.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </TableContainer>
+  {orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order) => (
+ <Card key={order.OrderId} variant="outlined" sx={{ my: 2,  width: "70%",  }}>
+ <CardContent>
+   <Box
+     display="flex"
+     justifyContent="space-between"
+     alignItems="flex-start"
+     flexWrap="wrap"
+     gap={2}
+   >
+     <Box>
+       <Typography variant="subtitle1" fontWeight="bold">
+         {order.Status === "Cancelled"
+           ? "Cancelled Item(s)"
+           : `Order Created ${format(new Date(order.Date), "EEE, d MMM yyyy")}`}
+       </Typography>
+       <Typography variant="body2" color="text.secondary">
+         Status: {order.Status}
+       </Typography>
 
-          <button type="submit" onClick={handleLogout} className='buttons'>LogOut</button>
+       <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic" }}>
+        NB: Orders take 30–45 minutes to arrive!.
+      </Typography>
+       <Typography variant="body2" color="text.secondary" >
+         Order ID: {order.OrderId}
+       </Typography>
+     </Box>
 
-        </div>
+     <Button variant="outlined" onClick={() => handleToggle(order.OrderId)} sx={{ mt: 1 }}>
+       {expandedOrder === order.OrderId ? "Hide Details" : "Order Details"}
+     </Button>
+   </Box>
+
+   <Collapse in={expandedOrder === order.OrderId}>
+   <Divider sx={{ my: 2 }} />
+<Typography variant="subtitle2" fontWeight="medium" gutterBottom>
+  Order Items:
+</Typography>
+<Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+  {order.Items.split(",").map((item, idx) => (
+    <Typography
+      key={idx}
+      variant="body2"
+      sx={{
+        backgroundColor: "#f1f1f1",
+        px: 1.5,
+        py: 0.5,
+        borderRadius: 1,
+        maxWidth: "100%",
+        wordBreak: "break-word",
+      }}
+    >
+      {item.trim()}
+    </Typography>
+  ))}
+
+</Box>
+
+   </Collapse>
+ </CardContent>
+</Card>
+  ))}
+
+  <Box mt={3}>
+    <Button variant="contained" color="error" onClick={handleLogout}>
+      Log Out
+    </Button>
+  </Box>
+</div>
       ) : (
       <div>
       <Register  />

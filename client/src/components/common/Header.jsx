@@ -105,9 +105,16 @@ if (valueFromLocalStorage) {
     dispatch(DELETE(id))
   }
 
-  // total prcie
-  const [price, setPrice] = useState(0)
-  //console.log(price)
+
+  const [price, setPrice] = useState(0);
+  const [deliveryFee, setDeliveryFee] = useState(15); 
+  const minimumForFreeDelivery = 200; 
+
+
+  const updatedDeliveryFee = price >= minimumForFreeDelivery ? 0 : deliveryFee;
+  
+ 
+  const totalPrice = price + updatedDeliveryFee;
 
   const totals = () => {
     let price = 0
@@ -149,7 +156,7 @@ const handleCheckout = async (e) => {
   const priceItem = getdata.map(Element => Element.price);
   
   const phoneNumbers = ['0685885609']; // Replace with the recipient's phone numbers
-  const message = `Order, ${items},${price},${location}`; // Replace with your message
+  const message = `Order, ${items},${totalPrice},${location}`; // Replace with your message
 
   try {
 
@@ -202,12 +209,12 @@ const handlePurchae = async(method) => {
 
   if (method === "card") {
     try {
-      const redirectUrl = await axios.post("https://grocerygo.co.za/api/yoco", { price });
+      const redirectUrl = await axios.post("https://grocerygo.co.za/api/yoco", { totalPrice });
       if (redirectUrl.data.redirectUrl) {
         const savedata = await axios.post('https://grocerygo.co.za/api/insertOrd', {
           email: myEmail, 
           getData: items,
-          cost: price,
+          cost: totalPrice,
           status: status,
           phone: phone,
           location: location,
@@ -216,7 +223,7 @@ const handlePurchae = async(method) => {
          })
          const sms = await axios.post('https://grocerygo.co.za/api/sms',{
           to: "+27656340510",
-          body: `Order items: ${items},  Total price: ${price}, phone: ${phone}, locataion: ${location}, Payment method: card`
+          body: `Order items: ${items},  Total price: ${totalPrice}, phone: ${phone}, locataion: ${location}, Payment method: card`
          })
       
         window.location.href = redirectUrl.data.redirectUrl;
@@ -229,7 +236,7 @@ const handlePurchae = async(method) => {
     const savedata = await axios.post('https://grocerygo.co.za/api/insertOrd', {
       email: myEmail, 
       getData: items,
-      cost: price,
+      cost: totalPrice,
       status: status,
       phone: phone,
       location: location,
@@ -238,7 +245,7 @@ const handlePurchae = async(method) => {
      })
      const sms = await axios.post('https://grocerygo.co.za/api/sms',{
       to: "+27656340510",
-      body: `Order items: ${items},  Total price: ${price}, phone: ${phone}, locataion: ${location}, Payment method: cash`
+      body: `Order items: ${items},  Total price: ${totalPrice}, phone: ${phone}, locataion: ${location}, Payment method: cash`
      })
      if(savedata){
       alert("Your order was placed. You will be contacted.");
@@ -319,16 +326,34 @@ const handlePurchae = async(method) => {
                       </div>
                     ))}
                     <div className='details_total'>
-                      <h4>Total : R{price.toFixed(2)}</h4>
+                    <p>Subtotal: R{price.toFixed(2)}</p>
+
+{/* Delivery Fee */}
+{updatedDeliveryFee > 0 ? (
+  <p>Delivery Fee (added): R{updatedDeliveryFee.toFixed(2)}</p>
+) : (
+  <p>Delivery Fee: Free!</p>
+)}
+
+{/* Always show the free delivery message */}
+<p style={{ color: "blue", fontSize: "14px" }}>
+  🚚 If you buy items for more than R200, you get free delivery!
+</p>
+
+<hr style={{ margin: "8px 0" }} />
+
+{/* Total */}
+<h4>Total: R{totalPrice.toFixed(2)}</h4>
+
                     </div>
                     <div>
                     <input
                       type="Location"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      placeholder="Street name, & suburb"
+                      placeholder="Street name, suburb / Res Name & Unit No"
                       className="btn-container loginput"
-       
+                      style={{ width: "100%" }}
                      />
                      </div>
                     <button sx={{ mr: 2 }} type='button' className='logout-button' onClick={handleCheckout} >

@@ -9,7 +9,7 @@ export const Product = () => {
     <>
       <section className='product'>
         <div className='container'>
-          <Heading title='Discounted Products' desc='Do not miss out on sales. Get more for less.' />
+          <Heading title='Most Bought Products' desc='Get more with less effect.' />
 
           <ProductItems cartItems={cartItems} />
         </div>

@@ -37,15 +37,29 @@ export const ProductItems = ({ cartItems }) => {
                 =>yadi button ma click garyo bhane chai items chai add hunxa 
                 =>items chai map((items) garrko xa data bata
                 */}
-                <button className='button' onClick={() => addToCart(items)}>
-                  <FiShoppingBag />
-                </button>
-                <button className='button'>
-                  <AiOutlineHeart />
-                </button>
-                <button className='button' onClick={() => onOpenImage(items.cover)}>
-                  <FiSearch />
-                </button>
+             <button 
+  className='button' 
+  onClick={() => addToCart(items)} 
+  title="Buy Item 🛒"
+>
+  <FiShoppingBag />
+</button>
+
+<button 
+  className='button' 
+  title="Like Item ❤️"
+>
+  <AiOutlineHeart />
+</button>
+
+<button 
+  className='button' 
+  onClick={() => onOpenImage(items.cover)} 
+  title="Zoom Item 🔍"
+>
+  <FiSearch />
+</button>
+
               </div>
             </div>
             <div className='details'>

@@ -157,8 +157,10 @@ export const TopProduct = () => {
              {/*<Heading  className="motion" title='Groceries' desc='' />*/}
 
             <div className='category'>
-            <h3 style={{width:"100%" , paddingLeft:"25px"}} >Groceries</h3>
-            
+            <h1 style={{width:"100%" , paddingLeft:"25px"}} >Groceries</h1>
+            <p style={{ paddingLeft: "25px", color: "#888", fontSize: "14px" }}>
+  Scroll to the left or right to see more categories →
+</p>
 
           
 
@@ -204,8 +206,10 @@ export const TopProduct = () => {
              {/*<Heading  className="motion" title='Groceries' desc='' />*/}
 
             <div className='category'>
-            <h3 style={{width:"100%" , paddingLeft:"25px"}} >Fast Food</h3>
-                
+            <h2 style={{width:"100%" , paddingLeft:"25px"}} >Fast Food</h2>
+            <p style={{ paddingLeft: "25px", color: "#888", fontSize: "14px" }}>
+              Scroll to the left or right to see more categories →
+            </p>
               <Box
                 display="flex"
                 gap={2}
